@@ -1,3 +1,5 @@
+![voibes](voibes.jpeg)
+
 # CHi: A Vibe-Codable Bittensor Subnet Template.
 
 1. Clone this repo into Cursor
