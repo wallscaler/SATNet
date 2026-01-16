@@ -21,8 +21,35 @@ miner‑submitted solver containers on benchmark instances.
 
 ### How It Works
 - **Miners** publish Docker images (solver code) and commit image URLs on‑chain.
-- **Validators** pull images, run them in containers, and score outputs.
+- **Validators** pull images, run them in sandboxed containers, and score outputs.
 - **Scoring** rewards better solutions, faster runtimes, and harder instances.
+
+### Miner Workflow
+1. Build a Docker image that implements `Actor.evaluate(task=...)`.
+2. Push the image to a registry (e.g., Docker Hub).
+3. Commit the image URL on‑chain via `subtensor.set_commitment(...)`.
+4. Validators execute your container and score your results.
+
+### System Diagram (High‑Level)
+```
+Benchmark Catalog  ──►  Validator
+                         │
+                         │ pulls image URL (on‑chain commitment)
+                         ▼
+                   Container Runtime
+                         │
+                         ▼
+                 Miner Docker Image
+                         │
+                         ▼
+                 Solver Output + Timing
+                         │
+                         ▼
+                   Validator Scores
+                         │
+                         ▼
+                   On‑chain Weights
+```
 
 ### Scoring (High‑Level)
 - `quality_ratio = min(1.0, best_known / miner_value)`
@@ -43,4 +70,15 @@ miner‑submitted solver containers on benchmark instances.
 - Validator‑only development (no miner code in repo)
 - No secret eval sets (assume all secrets leak)
 - Compute costs on miners, not validators
-- Containers for software competition (Basilica)
+- Containers for software competition (containerized execution)
+
+## Quick Start
+1. Open this repo in Cursor.
+2. Review `@knowledge/` for invariants and mechanism patterns.
+3. Configure and run `validator.py` with your benchmark catalog.
+
+## What’s Inside
+- `@knowledge/` — design rules, invariants, and mechanism patterns
+- `validator.py` — validator implementation (container execution, EMA scoring)
+
+Made by Const <3
